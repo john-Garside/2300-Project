@@ -329,6 +329,35 @@ def open_add_game(player, content, status):
     tk.Button(win, text="Add", command=submit).grid(row=len(fields), column=0, columnspan=2, pady=15)
 
 
+def open_edit_game(game_id, player, content, status):
+    # relatively similar to open_add_game but we only have to change a few rows not the whole thing
+    # below we set the window setttings for what pops up 
+    win = tk.Toplevel(root)
+    win.title("Edit Game")
+    win.geometry("350x180")
+#tells where the label to sit in the dropdown
+    tk.Label(win, text="Column:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+    column_var = tk.StringVar(value="title")
+    ttk.Combobox(win, textvariable=column_var,
+                 values=["title", "release_date", "rating", "platform", "developer"],
+                 state="readonly").grid(row=0, column=1, padx=5, pady=5)
+#basically the same thing as above but just for the value the user wants to change
+    tk.Label(win, text="New value:").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+    value_entry = tk.Entry(win, width=25)
+    value_entry.grid(row=1, column=1, padx=5, pady=5)
+
+    def submit(): # we define this inside of the functions so it can see the local variables
+        try:#we do not have to pass any arguments
+            database.edit_game(game_id, column_var.get(), value_entry.get())
+            status.config(text="Game updated")
+            win.destroy() # order matters so we dont break things
+            # you have to update the database, then close the popup, then refresh, or stuff wouldnt work quite right
+            show_library(content, status, player) # like the ones here
+        except (ValueError, sqlite3.IntegrityError) as e:
+            status.config(text=f"Error: {e}")
+    tk.Button(win, text="Save", command=submit).grid(row=2, column=0, columnspan=2, pady=15)
+
+
 
 def open_set_digital(tree, status):
     selection = tree.selection()
