@@ -44,7 +44,7 @@ CREATE TABLE Owns (
   player_id INTEGER NOT NULL,
   game_id INTEGER NOT NULL,
   playtime INTEGER DEFAULT 0,
-  PRIMARY KEY(player_id, game_id)
+  PRIMARY KEY(player_id, game_id), -- fixed missing comma, somehow still worked
   FOREIGN KEY(player_id) REFERENCES Player(player_id),
   FOREIGN KEY(game_id) REFERENCES Game(game_id)
 );
